@@ -96,11 +96,14 @@ def get_llm_models(platform_type: Literal[tuple(PLATFORMS)], base_url: str="", a
         #     api_key="",  # 填写您的 APIKey
         # )
         # client.list_models()
-        # 返回一个预定义的模型列表
+        # 返回一个预定义的模型列表（支持 OpenAI 和兼容接口如阿里云百炼）
         return [
             'gpt-4o',
             'gpt-4o-mini',
-            'gpt-3.5-turbo'
+            'gpt-3.5-turbo',
+            'qwen-plus',        # 阿里云百炼 - 通义千问增强版
+            'qwen-turbo',       # 阿里云百炼 - 通义千问极速版
+            'qwen-max',         # 阿里云百炼 - 通义千问旗舰版
         ]
 
 # 定义一个函数get_embedding_models，用于获取指定平台的Embedding模型列表
