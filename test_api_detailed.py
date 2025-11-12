@@ -55,11 +55,13 @@ def test_direct_api():
             "Content-Type": "application/json"
         }
 
+        model = os.getenv('DEFAULT_MODEL', 'gpt-4o-mini')
         data = {
-            "model": "gpt-3.5-turbo",
+            "model": model,
             "messages": [{"role": "user", "content": "Hello"}],
             "max_tokens": 50
         }
+        print(f"使用模型: {model}")
 
         response = requests.post(
             f"{base_url}/chat/completions",

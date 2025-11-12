@@ -23,8 +23,9 @@ def test_api_connection():
 
     try:
         # 创建 LLM 实例
-        llm = get_chatllm('OpenAI', 'gpt-3.5-turbo', temperature=0.1)
-        print("✓ LLM 实例创建成功")
+        model = os.getenv('DEFAULT_MODEL', 'gpt-4o-mini')
+        llm = get_chatllm('OpenAI', model, temperature=0.1)
+        print(f"✓ LLM 实例创建成功（模型: {model}）")
 
         # 测试简单对话
         print("\n测试简单对话...")

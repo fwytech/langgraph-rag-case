@@ -99,6 +99,7 @@ def get_llm_models(platform_type: Literal[tuple(PLATFORMS)], base_url: str="", a
         # 返回一个预定义的模型列表
         return [
             'gpt-4o',
+            'gpt-4o-mini',
             'gpt-3.5-turbo'
         ]
 
