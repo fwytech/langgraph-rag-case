@@ -2,6 +2,11 @@
 import os
 # 从typing模块导入Literal，用于类型注解，限制变量的取值范围
 from typing import Literal
+# 从dotenv模块导入load_dotenv函数，用于加载.env文件中的环境变量
+from dotenv import load_dotenv
+
+# 加载.env文件中的环境变量
+load_dotenv()
 # 从langchain_openai模块导入ChatOpenAI类，用于与OpenAI的聊天模型进行交互
 from langchain_openai import ChatOpenAI
 # 从langchain_ollama模块导入ChatOllama类，用于与Ollama的聊天模型进行交互
@@ -91,10 +96,14 @@ def get_llm_models(platform_type: Literal[tuple(PLATFORMS)], base_url: str="", a
         #     api_key="",  # 填写您的 APIKey
         # )
         # client.list_models()
-        # 返回一个预定义的模型列表
+        # 返回一个预定义的模型列表（支持 OpenAI 和兼容接口如阿里云百炼）
         return [
             'gpt-4o',
-            'gpt-3.5-turbo'
+            'gpt-4o-mini',
+            'gpt-3.5-turbo',
+            'qwen-plus',        # 阿里云百炼 - 通义千问增强版
+            'qwen-turbo',       # 阿里云百炼 - 通义千问极速版
+            'qwen-max',         # 阿里云百炼 - 通义千问旗舰版
         ]
 
 # 定义一个函数get_embedding_models，用于获取指定平台的Embedding模型列表
@@ -173,9 +182,9 @@ def get_chatllm(
             api_key = "EMPTY"
     # 如果平台类型是OpenAI
     elif platform_type == "OpenAI":
-        # 如果没有提供base_url，使用默认的地址
+        # 如果没有提供base_url，从环境变量中获取，如果环境变量也没有则使用默认地址
         if not base_url:
-            base_url = "https://api.openai.com/v1"
+            base_url = os.getenv('OPENAI_BASE_URL', "https://api.openai.com/v1")
         # 如果没有提供api_key，从环境变量中获取
         if not api_key:
             api_key = os.getenv('OPENAI_API_KEY')
@@ -229,10 +238,10 @@ def get_kb_names():
 
 # 定义一个函数get_embedding_model，用于获取指定平台的Embedding模型
 def get_embedding_model(
-        platform_type: Literal[tuple(PLATFORMS)] = "Ollama",
+        platform_type: Literal[tuple(PLATFORMS)] = "OpenAI",
         model: str = "text-embedding-ada-002",
-        base_url: str = os.getenv('OPENAI_BASE_URL'),
-        api_key: str = os.getenv('OPENAI_API_KEY'),
+        base_url: str = None,
+        api_key: str = None,
 ):
     # 如果平台类型是Ollama
     if platform_type == "Ollama":
@@ -259,6 +268,12 @@ def get_embedding_model(
     else:
         # 从langchain_openai模块导入OpenAIEmbeddings类
         from langchain_openai import OpenAIEmbeddings
+        # 如果没有提供base_url，从环境变量中获取
+        if not base_url:
+            base_url = os.getenv('OPENAI_BASE_URL', "https://api.openai.com/v1")
+        # 如果没有提供api_key，从环境变量中获取
+        if not api_key:
+            api_key = os.getenv('OPENAI_API_KEY')
         # 返回一个OpenAIEmbeddings对象，用于与OpenAI的Embedding模型交互
         return OpenAIEmbeddings(base_url=base_url, api_key=api_key, model=model)
 
